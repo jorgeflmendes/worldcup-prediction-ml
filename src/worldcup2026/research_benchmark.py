@@ -2220,6 +2220,16 @@ def predict_model(
         train = paper_training_frame(results, goal_data, year)
         model = fit_paper_sdr_poisson(train, method)
         probability = paper_sdr_probabilities(model, frame)
+    elif kind == "ensemble_super_blend":
+        b1 = predict_model("squad_hist_gb_classifier", goal_data, results, year)
+        b2 = predict_model("squad_hist_gradient_dc_prior", goal_data, results, year)
+        b3 = predict_model("market_squad_hist_gradient_dc_prior", goal_data, results, year)
+        
+        prob = (b1.probability * 0.60) + (b2.probability * 0.20) + (b3.probability * 0.20)
+        
+        return PredictionBlock(
+            year, kind, prob, b1.truth, b1.frame
+        )
     elif kind == "squad_hist_gb_classifier":
         train = goal_data[goal_data.date < cutoff]
         
@@ -2457,6 +2467,7 @@ def run_benchmark(simulations_2026: int = 100_000, *, write_artifacts: bool = Tr
         "team_effect_poisson",
         "sdr_sir_poisson",
         "sdr_save_poisson",
+        "ensemble_super_blend",
     ]
     prediction_rows = []
     calibrated_by_year: dict[int, dict[str, np.ndarray]] = {}
