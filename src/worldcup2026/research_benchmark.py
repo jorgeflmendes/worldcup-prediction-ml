@@ -2223,7 +2223,11 @@ def predict_model(
     elif kind == "squad_hist_gb_classifier":
         train = goal_data[goal_data.date < cutoff]
         
-        train_features = squad_goal_features(train, results, include_market_value=False)
+        train_features = squad_goal_features(
+            train, results, include_market_value=True, include_player_performance=True
+        )
+        train_match_stats = match_stats_goal_data(train)
+        train_features = pd.concat([train_features, match_stats_goal_features(train_match_stats).drop(columns=train_features.columns, errors='ignore')], axis=1)
         for col in train_features.columns:
             if train_features[col].isna().all(): train_features[col] = 0.0
             
@@ -2234,7 +2238,12 @@ def predict_model(
         )
         model = train_classifier(kind, train_features, y=y)
         
-        test_features = squad_goal_features(frame, results, include_market_value=False)
+        test_features = squad_goal_features(
+            frame, results, include_market_value=True, include_player_performance=True
+        )
+        test_match_stats = match_stats_goal_data(frame)
+        test_features = pd.concat([test_features, match_stats_goal_features(test_match_stats).drop(columns=test_features.columns, errors='ignore')], axis=1)
+        
         for col in test_features.columns:
             if test_features[col].isna().all(): test_features[col] = 0.0
             

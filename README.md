@@ -19,7 +19,7 @@ extra-time goals are reconstructed from event-level data and excluded.
 | Log loss | **0.99490** | 1.03724 |
 | Multiclass Brier | **0.58533** | 0.60852 |
 | Expected calibration error | 0.04716 | **0.07874** |
-| Accuracy | **56.25%** | 55.47% |
+| Accuracy | **57.81%** | 55.47% |
 | One-vs-rest AUC | **0.68344** | 0.65679 |
 
 The selected `squad_hist_gradient_dc_prior` model improves mean RPS over Poisson
