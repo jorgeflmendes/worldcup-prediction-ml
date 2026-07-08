@@ -96,13 +96,19 @@ MARKET_SQUAD_HIST_GRADIENT_PARAMS = {
     "learning_rate": 0.05,
     "max_leaf_nodes": 16,
     "l2_regularization": 8.0,
-    "max_iter": 180,
+    "max_iter": 300,
+    "early_stopping": True,
+    "validation_fraction": 0.1,
+    "n_iter_no_change": 15,
 }
 PERFORMANCE_MARKET_SQUAD_HIST_GRADIENT_PARAMS = {
     "learning_rate": 0.035,
     "max_leaf_nodes": 12,
     "l2_regularization": 12.0,
-    "max_iter": 220,
+    "max_iter": 300,
+    "early_stopping": True,
+    "validation_fraction": 0.1,
+    "n_iter_no_change": 15,
 }
 XGBOOST_POISSON_MARKET_PARAMS = {
     "n_estimators": 160,

@@ -403,7 +403,10 @@ def fit_goal_model(
             learning_rate=0.045,
             max_leaf_nodes=12,
             l2_regularization=4.0,
-            max_iter=180,
+            max_iter=250,
+            early_stopping=True,
+            validation_fraction=0.1,
+            n_iter_no_change=15,
             random_state=2026,
         )
         away = HistGradientBoostingRegressor(
@@ -411,7 +414,10 @@ def fit_goal_model(
             learning_rate=0.045,
             max_leaf_nodes=12,
             l2_regularization=4.0,
-            max_iter=180,
+            max_iter=250,
+            early_stopping=True,
+            validation_fraction=0.1,
+            n_iter_no_change=15,
             random_state=2026,
         )
     elif kind.startswith("blend_"):
