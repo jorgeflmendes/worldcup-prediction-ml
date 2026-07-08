@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# IDE and OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Model and library caches
+catboost_info/
+lightgbm_logs/
+
+# Downloaded or generated data
+data/raw/
+data/external/squad_panel_pre_tournament.csv
+data/external/squad_snapshots.csv
+data/external/wc2026_fair_play.csv
+data/external/wc2026_group_fixtures_live.csv
+
+# Generated experiment outputs. Curated results are explicitly retained.
+artifacts/*
+!artifacts/research_sota_comparison_audited.csv
+!artifacts/research_model_metrics_combined.csv
+!artifacts/research_forecast_2026_100k.csv
+
+# Rendered and temporary output
+output/
+tmp/
+
+# Local secrets and overrides
+.env
+.env.*
+!.env.example

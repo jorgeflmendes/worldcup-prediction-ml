@@ -1,0 +1,3 @@
+snapshot_date,tournament,team,player_id,age,position,club,club_domestic_rank,club_elo,club_league_strength,market_value_eur,minutes_last_365,goals_last_365,assists_last_365,xg_last_365,xa_last_365,injury_days_last_365,champions_league_minutes_last_365,international_caps
+2022-11-19,2022,Argentina,example-1,27,FW,Example FC,2,1765,0.91,45000000,2110,17,6,15.3,4.1,9,420,48
+2026-06-10,2026,Portugal,example-2,25,MF,Example FC,1,1840,0.96,80000000,2450,11,14,8.7,10.8,0,630,39

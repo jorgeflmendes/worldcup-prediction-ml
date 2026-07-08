@@ -1,0 +1,2 @@
+# Compatibility install for users who do not use project extras directly.
+-e .[research]

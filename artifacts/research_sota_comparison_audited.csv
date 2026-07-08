@@ -1,0 +1,12 @@
+benchmark,benchmark_status,eligible_for_comparison,published_rps,our_best_model,our_rps,rps_delta_ours_minus_benchmark,rps_winner,published_accuracy,our_accuracy,accuracy_delta_ours_minus_benchmark,accuracy_winner
+Rezaei-Samadi M1 Elo-logistic,published_comparator,True,0.219,market_consensus_hybrid,0.19967938568552562,-0.019320614314474377,ours,0.508,0.5703125,0.06231249999999999,ours
+Rezaei-Samadi M2 Full logistic,published_comparator,True,0.217,market_consensus_hybrid,0.19967938568552562,-0.017320614314474375,ours,0.523,0.5703125,0.04731249999999998,ours
+Rezaei-Samadi M3 Poisson current Elo,published_comparator,True,0.212,market_consensus_hybrid,0.19967938568552562,-0.01232061431447437,ours,0.516,0.5703125,0.054312499999999986,ours
+Rezaei-Samadi M4 ARIMA-Poisson,published_comparator,True,0.213,market_consensus_hybrid,0.19967938568552562,-0.013320614314474372,ours,0.516,0.5703125,0.054312499999999986,ours
+Rezaei-Samadi M5 NNAR-Poisson,published_comparator,True,0.214,market_consensus_hybrid,0.19967938568552562,-0.014320614314474372,ours,0.516,0.5703125,0.054312499999999986,ours
+Rezaei-Samadi M6 XGBoost,published_comparator,True,0.215,market_consensus_hybrid,0.19967938568552562,-0.015320614314474373,ours,0.531,0.5703125,0.03931249999999997,ours
+Rezaei-Samadi M7 Ensemble,published_comparator,True,0.209,market_consensus_hybrid,0.19967938568552562,-0.009320614314474368,ours,0.547,0.5703125,0.023312499999999958,ours
+Rezaei-Samadi M8 SIR LDA d=1,temporal_audit_failed,False,0.129,market_consensus_hybrid,0.19967938568552562,0.07067938568552562,not_comparable_audit_failed,0.688,0.5703125,-0.11768749999999994,benchmark
+Rezaei-Samadi M9 SIR LDA d=2,temporal_audit_failed,False,0.127,market_consensus_hybrid,0.19967938568552562,0.07267938568552562,not_comparable_audit_failed,0.688,0.5703125,-0.11768749999999994,benchmark
+Rezaei-Samadi M10 SAVE d=1,temporal_audit_failed,False,0.129,market_consensus_hybrid,0.19967938568552562,0.07067938568552562,not_comparable_audit_failed,0.695,0.5703125,-0.12468749999999995,benchmark
+Rezaei-Samadi M11 SAVE d=2,temporal_audit_failed,False,0.127,market_consensus_hybrid,0.19967938568552562,0.07267938568552562,not_comparable_audit_failed,0.68,0.5703125,-0.10968750000000005,benchmark

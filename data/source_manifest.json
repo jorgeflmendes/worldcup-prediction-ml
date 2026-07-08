@@ -1,0 +1,31 @@
+{
+  "generated_at": "2026-07-03",
+  "algorithm": "sha256",
+  "files": {
+    "data/raw/clubelo/1998-06-10.csv": "77a3062e86da6c938c7e574e9d8ec7da269f7ef86ffac7d49eb839e4fbb983ca",
+    "data/raw/clubelo/2002-05-31.csv": "a9f7584c6eaa776c549a2c223d5d6eca0ea80b686aa0313b3051825e902dffe7",
+    "data/raw/clubelo/2006-06-09.csv": "bacece1f59de2c4509c39500d4a425ec60f3de23c6c8ad08ad4d1ea81c420940",
+    "data/raw/clubelo/2010-06-11.csv": "f549c8a1709eb15ea1c1d7b6487e961cb44eb199a802b0af2934a1156d1b23a4",
+    "data/raw/clubelo/2014-06-12.csv": "2f629e316078ed1cd6520b126b675deec8b26cda3aa8edb3254d16b9fe280b6b",
+    "data/raw/clubelo/2018-06-14.csv": "0f0c76162fe8b0d5010f46415406c79d08a979b5de98a639bd4f4fd0fc2b7cf0",
+    "data/raw/clubelo/2022-11-20.csv": "1e22bdb5e321b6e8560644512ac3b06dddc6ec573065502255a9e7d97a3a8647",
+    "data/raw/clubelo/2026-06-10.csv": "3a1174d10719fee146fbdd64285426e76409dde23076b7d7b1915d34b4fe9496",
+    "data/raw/fifa_rankings_1992_2022.zip": "84e4cc2a9308cc68444d876fe35e720adae9c1a51d68080a8b6e6a597f79bd4c",
+    "data/raw/hf_matches_all.csv": "5bcbae0c66f65cbb8f4a26588cc163de7d6facb75f0cba17b5d5178b5f73a1ec",
+    "data/raw/international_elo_1872_2025.zip": "606028c8c0b98a83c5c411d1b9dfd3cfc5c2304985b35a91f03e12856bac3d85",
+    "data/raw/international_results.csv": "cfe48bd9b40e1ff662ecfe62864d1acb7f1f66e966010eed3f531c3c17760a4e",
+    "data/raw/transfermarkt_player_scores.zip": "bff1d31ce181caf996122327093a8c885ea8f5933e1014112d9b4d03cc4da4bc",
+    "data/raw/wc_live_matches.csv": "80cfb737afaae979fb68075e5a84198b1dd944815fc386856eb4000e420dbd38",
+    "data/raw/wc_live_match_team_stats.csv": "524c0e1108b4f0403d2e09725c7cc343c861f39ff828d5b4499408b8e1c83e4c",
+    "data/raw/wc_live_teams.csv": "785dfa98a34f9c7b054426e03485601f0f93a782b129026a1ad4b75af09cef35",
+    "data/raw/wikipedia/1998_squads.html": "450a70c42ec60d9f7f739a0027830fe585d9c87dda882077a1a4caa0fc253f19",
+    "data/raw/wikipedia/2002_squads.html": "92f4692a87f0f488ab1da32d98f147b973bac15d4fcceb9c2239a368d5032016",
+    "data/raw/wikipedia/2006_squads.html": "ea9299e91fbd72d9fac4208125f0c20bae79af7cd1a5626cf6967bf9f0784c76",
+    "data/raw/wikipedia/2010_squads.html": "44ab75e6af6c65d6df8b90e72b7ef3da4165d78098866e9c90807b92e3b799d6",
+    "data/raw/wikipedia/2014_squads.html": "7ed6460613704eb26602401d3b77d3de560df291e660f0999a7cc48f47bb00a9",
+    "data/raw/wikipedia/2018_squads.html": "bbd76e040f33c7d48b24f1ca2e0d70889306078058d306c36933d87e07f0b62d",
+    "data/raw/wikipedia/2022_squads.html": "0cf5a91e26677999a52f0e6c424c1aafa448d3e8901fa2fa4cff3e1a6f43da4b",
+    "data/raw/world_cup_2026_squads.zip": "394ba9ff38f58b8abca57a2f96b8630a5f168221d27f4986cfebef8dc78c2e85",
+    "data/raw/WorldCup2026.xlsx": "a85f3e7a2c3f87e211b47aa9a43bde281bef5ef82a474fa7228d5deb65d44d88"
+  }
+}

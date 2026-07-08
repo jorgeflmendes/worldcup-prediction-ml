@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the repository."
+title: "WorldCup2026: Probabilistic FIFA World Cup forecasting"
+type: software
+version: 0.1.0
+date-released: 2026-07-01
+license: MIT
+authors:
+  - name: "World Cup Forecasting contributors"
