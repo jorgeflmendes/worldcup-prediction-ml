@@ -1849,6 +1849,9 @@ def squad_score_cache(
                 - forms.get(away, (0.5, 0.0, 1500.0, 0.0, 0.5, 0.0))[5]
                 for home, away in pairs
             ],
+            "h2h_win_diff": 0.0,
+            "h2h_goal_diff": 0.0,
+            "h2h_matches": 0.0,
         }
     )
     if market is not None and performance is not None:
@@ -1974,13 +1977,16 @@ def fit_team_poisson(goal_data: pd.DataFrame, cutoff: pd.Timestamp) -> TeamPoiss
     )
 
 
-def train_classifier(kind: str, train: pd.DataFrame) -> ClassifierMixin:
-    x = add_candidate_features(train)
-    y = np.where(
-        train.home_goals > train.away_goals,
-        0,
-        np.where(train.home_goals == train.away_goals, 1, 2),
-    )
+def train_classifier(kind: str, train: pd.DataFrame, y=None) -> ClassifierMixin:
+    if kind != "squad_hist_gb_classifier":
+        x = add_candidate_features(train)
+        y = np.where(
+            train.home_goals > train.away_goals,
+            0,
+            np.where(train.home_goals == train.away_goals, 1, 2),
+        )
+    else:
+        x = train
     if kind == "elo_logistic":
         model = Pipeline(
             [
@@ -2019,6 +2025,18 @@ def train_classifier(kind: str, train: pd.DataFrame) -> ClassifierMixin:
             max_iter=170,
             max_leaf_nodes=12,
             l2_regularization=3.0,
+            random_state=2026,
+        )
+        return model.fit(x, y)
+    if kind == "squad_hist_gb_classifier":
+        model = HistGradientBoostingClassifier(
+            learning_rate=0.045,
+            max_iter=300,
+            max_leaf_nodes=12,
+            l2_regularization=4.0,
+            early_stopping=True,
+            validation_fraction=0.1,
+            n_iter_no_change=15,
             random_state=2026,
         )
         return model.fit(x, y)
@@ -2202,6 +2220,25 @@ def predict_model(
         train = paper_training_frame(results, goal_data, year)
         model = fit_paper_sdr_poisson(train, method)
         probability = paper_sdr_probabilities(model, frame)
+    elif kind == "squad_hist_gb_classifier":
+        train = goal_data[goal_data.date < cutoff]
+        
+        train_features = squad_goal_features(train, results, include_market_value=False)
+        for col in train_features.columns:
+            if train_features[col].isna().all(): train_features[col] = 0.0
+            
+        y = np.where(
+            train.home_goals > train.away_goals,
+            0,
+            np.where(train.home_goals == train.away_goals, 1, 2),
+        )
+        model = train_classifier(kind, train_features, y=y)
+        
+        test_features = squad_goal_features(frame, results, include_market_value=False)
+        for col in test_features.columns:
+            if test_features[col].isna().all(): test_features[col] = 0.0
+            
+        probability = model.predict_proba(test_features)
     else:
         train = goal_data[goal_data.date < cutoff]
         model = train_classifier(kind, train)
@@ -2404,6 +2441,7 @@ def run_benchmark(simulations_2026: int = 100_000, *, write_artifacts: bool = Tr
         "match_stats_hist_gradient",
         "match_stats_hist_gradient_dc",
         "hist_gb_classifier",
+        "squad_hist_gb_classifier",
         "xgboost",
         "lightgbm",
         "catboost",
