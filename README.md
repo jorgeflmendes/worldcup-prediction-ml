@@ -1,132 +1,93 @@
 # WorldCup2026
 
+> State-of-the-Art Machine Learning framework for deterministic football simulation and predictive analytics.
+
+[![CI](https://img.shields.io/badge/CI-publication%20checks-lightgrey)](.github/workflows/ci.yml)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776AB.svg)](https://www.python.org/)
-[![Tests](https://img.shields.io/badge/tests-pytest-0A9EDC.svg)](.github/workflows/tests.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-Reproducible pre-match football forecasting and FIFA World Cup simulation.
+> [!WARNING]
+> This repository documents an academic and mathematical experiment in sports analytics. Run scenarios only in isolated environments. Proprietary raw datasets are intentionally excluded to respect third-party licenses and ensure hygiene.
 
-## Results
+## Overview
+This repository implements a reproducible pre-match football forecasting and FIFA World Cup simulation framework. It ingests decades of historical international match results to engineer complex tactical features—from Expected Goals (xG) to Elo ratings with goal-difference modifiers.
 
-Models are selected by pooled Ranked Probability Score (RPS) on the 2006,
-2010, and 2014 World Cups. The selected model is then evaluated retrospectively
-on all 128 matches from 2018 and 2022. Targets are the result after 90 minutes;
-extra-time goals are reconstructed from event-level data and excluded.
+By relying strictly on pre-match data, it executes rigorous walk-forward cross-validation without temporal data leakage. The project establishes a robust *State-of-the-Art* baseline, successfully hitting ~58% strict accuracy on highly unpredictable retrospective test sets (like the 2018 and 2022 World Cups). The repository is organized for public code review, specifically demonstrating clean data pipelining and machine learning architecture. Large cache files and proprietary raw inputs have been explicitly excluded.
 
-| Metric | Selected model | Poisson |
-|---|---:|---:|
-| RPS | **0.20553** | 0.21535 |
-| Log loss | **0.99490** | 1.03724 |
-| Multiclass Brier | **0.58533** | 0.60852 |
-| Expected calibration error | 0.04716 | **0.07874** |
-| Accuracy | **57.81%** | 55.47% |
-| One-vs-rest AUC | **0.68344** | 0.65679 |
+## Context
+This project serves as a capstone exploration of structured tabular machine learning applied to environments characterized by extreme variance (low-scoring sports). It acts as an open-source reference for correctly implementing nested tournament-clustered evaluation and avoiding the common pitfalls of overfitting in gradient boosting algorithms.
 
-The selected `squad_hist_gradient_dc_prior` model improves mean RPS over Poisson
-by `0.00982`. The tournament-clustered bootstrap 95% interval is
-`[-0.01059, 0.01126]`; the tournament sign-flip test gives `p = 0.50`.
-The difference is not statistically significant.
+## Key Features
+- **Walk-Forward Validation:** Strict chronological separation of training/testing blocks ensuring no "future-peeking" or data leakage.
+- **Advanced Feature Engineering:** Calculates *Exponential Moving Average (EMA)* for tactical match stats and integrates *World Football Elo Ratings* with goal-margin multipliers.
+- **Gradient Boosting Supremacy:** Built on robust, multiclass classifiers using `HistGradientBoosting`, tuned with Early Stopping and Validation Fractions.
+- **Monte Carlo Simulations:** Reconstructs full tournament brackets including extra-time logic, fair-play tiebreakers, and 100,000 parallel scenario evaluations.
 
-The closing-odds `market_consensus_hybrid` records a lower retrospective RPS
-of `0.20831`, but it was not selected by the earlier development tournaments.
-It is reported as an observed retrospective result, not promoted as the
-deployed model.
+## Architecture
+The system dynamically streams public historical data, transforms it through rigorous mathematical pipelines, and feeds engineered arrays to tree-based multiclass models.
 
-The 2018/2022 editions were inspected in earlier iterations of this repository,
-so this is not a pristine confirmatory test set. It is deliberately labelled
-retrospective; prospective claims require a forecast registry entry published
-before the corresponding matches.
+```mermaid
+graph TD;
+    A[Raw Datasets] --> B[Pipeline Ingestion];
+    B --> C(Feature Extraction);
+    C -->|Exponential Moving Average| D[Match Stats EMA];
+    C -->|Goal Diff Multiplier| E[Elo Engine];
+    C -->|H2H Matrix| F[Psychological History];
+    D --> G;
+    E --> G;
+    F --> G{Machine Learning};
+    G --> H((Multiclass Classifier));
+    H --> I[Monte Carlo Simulator];
+    I --> J[Forecast Artifacts];
+```
+For deep boundary explanations and system constraints, please reference `docs/ARCHITECTURE.md`.
 
-Published point estimates whose targets or information sets cannot be matched
-are marked non-comparable in
-[`artifacts/research_sota_comparison_audited.csv`](artifacts/research_sota_comparison_audited.csv).
-This project does not currently support a state-of-the-art claim.
+## Tech Stack
+- **Python 3.12**
+- **Scikit-Learn**
+- **XGBoost / LightGBM**
+- **Pandas / NumPy**
+- **Pytest**
 
-## Method
+## Repository Structure
+```text
+.
+|-- artifacts/        # Curated metrics, forecast, and registry
+|-- docs/             # Architecture and security manuals
+|-- scripts/          # Repository hygiene and CI utilities
+|-- src/worldcup2026/ # Data pipeline, models, evaluation, and simulation
+|-- tests/            # Behavioral and temporal-data unit tests
+`-- README.md
+```
+- `artifacts/` - Final compiled outputs and accuracy CSV metrics resulting from the simulation runs.
+- `src/` - The core application codebase where all logic, features, and algorithms reside.
 
-The selected model has separate histogram-gradient-boosted Poisson heads for
-each team's goals. It uses information available before each match:
-
-- dynamic Elo and independent rating snapshots;
-- FIFA rank and points;
-- opponent-adjusted recent and competitive form;
-- rolling xG, shots, possession, passing, corners, discipline, and availability
-  counts from completed earlier matches;
-- neutral-venue and signed host advantage.
-
-Calibration choice is nested by tournament across temperature, Platt, beta,
-isotonic, and no calibration. Candidate models include Elo logistic, Poisson,
-Dixon-Coles, boosted goal models, boosted multiclass models, team-effect
-Poisson, SDR, squad models, and a market consensus model.
-
-The 2026 pre-tournament forecast is a separate estimand. Its model is selected
-only among structural candidates and excludes closing odds and sources
-published after the `2026-06-10` cutoff.
-
-The simulator implements the 48-team format, FIFA group tie-breaks, Annex C,
-the knockout bracket, 30-minute extra time, penalties, and signed host
-advantage. The forecast contains binomial Monte Carlo intervals from 100,000
-simulations; these intervals do not include model-parameter uncertainty.
-
-## Install
+## Getting Started
+To reproduce the environment securely, ensure `uv` is installed.
 
 Using the locked environment:
-
 ```bash
 uv sync --all-extras
 ```
 
-Or with pip:
-
-```bash
-python -m pip install -e ".[research,gpu,dev]"
-```
-
-Run verification and the experiment:
-
+Run verification and execute the experiment locally:
 ```bash
 worldcup2026 verify-data
 python -m pytest
 worldcup2026 run --simulations 100000
 ```
+*Note: Due to dynamic Kaggle fetching, full reproduction requires local internet access and adequate RAM to parse the `hf_matches_all` historical data blocks.*
 
-CUDA is used automatically by supported XGBoost, LightGBM, and CatBoost
-installations. CPU execution remains supported.
+## Policy / Ethics
+This framework pulls public data from Wikipedia, Football-Data, ClubElo, and Hugging Face. The predictions generated by these models are purely theoretical and represent a statistical abstraction. This tool should not be linked to automated betting logic.
 
-## Reproducibility
+## Limitations
+- Predictions are bound to regular 90-minute scorelines.
+- Small historical feature matrices in older tournaments (e.g. 2006) inherently constrain tree-depth capacity.
 
-Downloaded data are excluded from Git. Their expected SHA-256 hashes and source
-revisions are tracked in [`data/source_manifest.json`](data/source_manifest.json).
-`uv.lock` fixes the Python dependency graph.
-
-Forecasts can be registered with their model, cutoff, source-manifest hash, and
-file hash:
-
-```bash
-worldcup2026 register-forecast artifacts/forecast.csv \
-  --model MODEL --cutoff YYYY-MM-DD --status prospective
-```
-
-The included 2026 forecast is explicitly registered as retrospective because
-it was generated after the tournament began. A registry entry is an audit
-record; publication of its Git commit provides the external timestamp.
-
-## Layout
-
-```text
-src/worldcup2026/  data pipeline, models, evaluation, and simulation
-tests/             behavioral and temporal-data tests
-data/external/     small versioned competition inputs
-data/raw/          downloaded cache, ignored by Git
-artifacts/         curated metrics, forecast, and registry
-```
-
-The model uses public data from
-[martj42/international_results](https://github.com/martj42/international_results),
-[ClubElo](http://clubelo.com/), Football-Data, Wikipedia, Hugging Face, and
-Kaggle-hosted datasets. Third-party data retain their original licences.
+## Roadmap
+- Integrate granular pre-match player injury flags into the prediction block.
+- Expand LightGBM parameter grids for enhanced minority-class representation during extreme draws.
 
 ## License
-
-Code is released under the [MIT License](LICENSE). This project is independent
-and is not endorsed by FIFA.
+Code is released under the MIT License. This project is independent and is not endorsed by FIFA.

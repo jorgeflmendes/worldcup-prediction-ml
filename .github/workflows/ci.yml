@@ -1,0 +1,27 @@
+name: Publication Standards CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-repository:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          
+      - name: Run Repository Hygiene Checks
+        run: python scripts/check_repository.py
+        
+      - name: Run Core Tests
+        run: |
+          pip install uv
+          uv sync --all-extras
+          uv run pytest
