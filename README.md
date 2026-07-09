@@ -1,18 +1,18 @@
 # WorldCup2026
 
-> State-of-the-Art Machine Learning framework for deterministic football simulation and predictive analytics.
+> Machine Learning framework for deterministic football simulation and predictive analytics.
 
 [![CI](https://img.shields.io/badge/CI-publication%20checks-lightgrey)](.github/workflows/ci.yml)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776AB.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 > [!WARNING]
-> This repository documents an academic and mathematical experiment in sports analytics. Run scenarios only in isolated environments. Proprietary raw datasets are intentionally excluded to respect third-party licenses and ensure hygiene.
+> Proprietary raw datasets are intentionally excluded to respect third-party licenses and ensure hygiene.
 
 ## Overview
 This repository implements a reproducible pre-match football forecasting and FIFA World Cup simulation framework. It ingests decades of historical international match results to engineer complex tactical features—from Expected Goals (xG) to Elo ratings with goal-difference modifiers.
 
-By relying strictly on pre-match data, it executes rigorous walk-forward cross-validation without temporal data leakage. The project establishes a robust *State-of-the-Art* baseline, successfully hitting ~58% strict accuracy on highly unpredictable retrospective test sets (like the 2018 and 2022 World Cups). The repository is organized for public code review, specifically demonstrating clean data pipelining and machine learning architecture. Large cache files and proprietary raw inputs have been explicitly excluded.
+By relying strictly on pre-match data, it executes rigorous walk-forward cross-validation without temporal data leakage. The project establishes a robust baseline, successfully hitting ~58% strict accuracy on highly unpredictable retrospective test sets (like the 2018 and 2022 World Cups). The repository is organized for public code review, specifically demonstrating clean data pipelining and machine learning architecture. Large cache files and proprietary raw inputs have been explicitly excluded.
 
 ## Context
 This project serves as a capstone exploration of structured tabular machine learning applied to environments characterized by extreme variance (low-scoring sports). It acts as an open-source reference for correctly implementing nested tournament-clustered evaluation and avoiding the common pitfalls of overfitting in gradient boosting algorithms.
