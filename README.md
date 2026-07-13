@@ -43,11 +43,11 @@ Our core architecture (`squad_hist_gb_classifier`) establishes a clear statistic
 
 
 ## 2026 World Cup Prediction
-Based on the latest model execution (simulating 100,000 tournament scenarios with the `sdr_save_poisson` model), the framework predicts the following favorites to win the 2026 FIFA World Cup:
+Based on the latest model execution (simulating 100,000 tournament scenarios using a hybrid matrix injection from the best-performing `squad_hist_gb_classifier`), the framework predicts the following favorites to win the 2026 FIFA World Cup:
 
-1. **Spain** - **15%** probability of winning (95% CI: 8.0% - 22.0%)
-2. **Argentina** - **13%** probability of winning (95% CI: 6.4% - 19.6%)
-3. **France** - **12%** probability of winning (95% CI: 5.6% - 18.4%)
+1. **Spain** - **18.3%** probability of winning (95% CI: 18.0% - 18.5%)
+2. **Argentina** - **12.6%** probability of winning (95% CI: 12.3% - 12.8%)
+3. **France** - **8.8%** probability of winning (95% CI: 8.6% - 9.0%)
 
 *Note: These predictions are generated from purely historical pre-match data using strict walk-forward validation with a knowledge cutoff of **June 10, 2026** (the simulation assumes no data from the tournament itself is used).*
 

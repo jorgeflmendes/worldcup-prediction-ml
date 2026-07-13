@@ -479,6 +479,7 @@ def score_cache(
     forms: dict[str, tuple[float, float, float, float]] | None = None,
     external_elo: dict[str, float] | None = None,
     host_teams: set[str] | None = None,
+    injected_1x2: dict[tuple[str, str], tuple[float, float, float]] | None = None,
 ) -> dict[tuple[str, str], dict[str, np.ndarray | tuple[float, float, float]]]:
     pairs = [(home, away) for home in teams for away in teams if home != away]
     fifa = fifa or {}
@@ -554,6 +555,23 @@ def score_cache(
         matrix = np.outer(
             poisson_probabilities(float(h_mean)), poisson_probabilities(float(a_mean))
         )
+        
+        if injected_1x2 is not None and pair in injected_1x2:
+            p_home, p_draw, p_away = injected_1x2[pair]
+            
+            w_sum = matrix[home_win].sum()
+            d_sum = matrix[draw].sum()
+            l_sum = matrix[~home_win & ~draw].sum()
+            
+            if w_sum > 0:
+                matrix[home_win] *= (p_home / w_sum)
+            if d_sum > 0:
+                matrix[draw] *= (p_draw / d_sum)
+            if l_sum > 0:
+                matrix[~home_win & ~draw] *= (p_away / l_sum)
+                
+            matrix /= matrix.sum()
+
         output[pair] = {
             "means": (float(h_mean), float(a_mean)),
             "scores": matrix.ravel(),

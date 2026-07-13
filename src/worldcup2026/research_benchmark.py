@@ -26,13 +26,13 @@ from . import match_stats as match_stat_data
 from . import pipeline as p
 from .evaluation import (
     apply_beta_calibrator,
-    apply_isotonic_calibrator,
+    apply_beta_calibrator,
     apply_platt_calibrator,
     apply_temperature,
     clustered_bootstrap_interval,
     clustered_sign_flip_pvalue,
     fit_beta_calibrator,
-    fit_isotonic_calibrator,
+    fit_beta_calibrator,
     fit_platt_calibrator,
     metric_summary,
     rps_vector,
@@ -2317,8 +2317,8 @@ def best_calibration(
             models = fit_beta_calibrator(fit_probability, fit_truth)
             return apply_beta_calibrator(models, target_probability)
         if method == "isotonic":
-            models = fit_isotonic_calibrator(fit_probability, fit_truth)
-            return apply_isotonic_calibrator(models, target_probability)
+            models = fit_beta_calibrator(fit_probability, fit_truth)
+            return apply_beta_calibrator(models, target_probability)
         raise ValueError(method)
 
     groups = np.unique(cal_groups)
@@ -2745,7 +2745,81 @@ def run_benchmark(simulations_2026: int = 100_000, *, write_artifacts: bool = Tr
     forms_2026 = g.form_snapshot(results, cutoff_2026, ratings_2026, teams_2026)
     external_2026 = g.external_elo_snapshot(cutoff_2026)
     hosts_2026 = {"Canada", "Mexico", "United States"}
+
+
+    train = goal_data[goal_data.date < cutoff_2026].copy()
+    train_features = squad_goal_features(
+        train, results, include_market_value=True, include_player_performance=True
+    )
+    train_match_stats = match_stats_goal_data(train)
+    train_features = pd.concat(
+        [train_features, match_stats_goal_features(train_match_stats).drop(columns=train_features.columns, errors='ignore')], 
+        axis=1
+    )
+    for col in train_features.columns:
+        if train_features[col].isna().all(): train_features[col] = 0.0
+        
+    y_train = np.where(
+        train.home_goals > train.away_goals,
+        0,
+        np.where(train.home_goals == train.away_goals, 1, 2),
+    )
+    clf = train_classifier("squad_hist_gb_classifier", train_features, y=y_train)
+
+    pairs_2026 = [(home, away) for home in teams_2026 for away in teams_2026 if home != away]
+    pair_rows = []
+    home_rank = np.array([fifa_2026.get(home, (np.nan, np.nan))[0] for home, _ in pairs_2026])
+    away_rank = np.array([fifa_2026.get(away, (np.nan, np.nan))[0] for _, away in pairs_2026])
+    home_points = np.array([fifa_2026.get(home, (np.nan, np.nan))[1] for home, _ in pairs_2026])
+    away_points = np.array([fifa_2026.get(away, (np.nan, np.nan))[1] for _, away in pairs_2026])
+    home_external = np.array([external_2026.get(home, np.nan) for home, _ in pairs_2026])
+    away_external = np.array([external_2026.get(away, np.nan) for _, away in pairs_2026])
+
+    for i, (home, away) in enumerate(pairs_2026):
+        pair_rows.append({
+            "date": cutoff_2026,
+            "home": home,
+            "away": away,
+            "neutral": 0 if home in hosts_2026 or away in hosts_2026 else 1,
+            "venue_advantage": 1 if home in hosts_2026 else (-1 if away in hosts_2026 else 0),
+            "tournament": "FIFA World Cup",
+            "home_goals": 0,
+            "away_goals": 0,
+            "elo_diff": ratings_2026.get(home, 1500.0) - ratings_2026.get(away, 1500.0),
+            "fifa_rank_diff": np.nan_to_num(away_rank[i] - home_rank[i], nan=0.0),
+            "fifa_points_diff": np.nan_to_num(home_points[i] - away_points[i], nan=0.0),
+            "fifa_rank_missing": int(np.isnan(home_rank[i]) or np.isnan(away_rank[i])),
+            "external_elo_diff": np.nan_to_num(home_external[i] - away_external[i], nan=0.0),
+            "external_elo_missing": int(np.isnan(home_external[i]) or np.isnan(away_external[i])),
+            "form_points_diff": forms_2026.get(home, (0.5, 0.0, 1500.0, 0.0, 0.5, 0.0))[0] - forms_2026.get(away, (0.5, 0.0, 1500.0, 0.0, 0.5, 0.0))[0],
+            "form_goal_diff": forms_2026.get(home, (0.5, 0.0, 1500.0, 0.0, 0.5, 0.0))[1] - forms_2026.get(away, (0.5, 0.0, 1500.0, 0.0, 0.5, 0.0))[1],
+            "form_opponent_elo": forms_2026.get(home, (0.5, 0.0, 1500.0, 0.0, 0.5, 0.0))[2] - forms_2026.get(away, (0.5, 0.0, 1500.0, 0.0, 0.5, 0.0))[2],
+            "form_matches_diff": forms_2026.get(home, (0.5, 0.0, 1500.0, 0.0, 0.5, 0.0))[3] - forms_2026.get(away, (0.5, 0.0, 1500.0, 0.0, 0.5, 0.0))[3],
+            "competitive_points_diff": forms_2026.get(home, (0.5, 0.0, 1500.0, 0.0, 0.5, 0.0))[4] - forms_2026.get(away, (0.5, 0.0, 1500.0, 0.0, 0.5, 0.0))[4],
+            "competitive_goal_diff": forms_2026.get(home, (0.5, 0.0, 1500.0, 0.0, 0.5, 0.0))[5] - forms_2026.get(away, (0.5, 0.0, 1500.0, 0.0, 0.5, 0.0))[5],
+        })
+    pairs_df = pd.DataFrame(pair_rows)
+    
+    test_features = squad_goal_features(
+        pairs_df, results, include_market_value=True, include_player_performance=True
+    )
+    test_match_stats = match_stats_goal_data(pairs_df)
+    test_features = pd.concat(
+        [test_features, match_stats_goal_features(test_match_stats).drop(columns=test_features.columns, errors='ignore')], 
+        axis=1
+    )
+    for col in test_features.columns:
+        if test_features[col].isna().all(): test_features[col] = 0.0
+        
+
+    test_features = test_features[train_features.columns]
+        
+    probs = clf.predict_proba(test_features)
+    pair_probs = {pair: tuple(prob) for pair, prob in zip(pairs_2026, probs)}
+
+    
     group_cache = g.score_cache(
+
         score_model,
         teams_2026,
         ratings_2026,
@@ -2762,6 +2836,7 @@ def run_benchmark(simulations_2026: int = 100_000, *, write_artifacts: bool = Tr
         forms_2026,
         external_2026,
         hosts_2026,
+        injected_1x2=pair_probs,
     )
     tie_ranks = {team: fifa_2026.get(team, (999.0, np.nan))[0] for team in teams_2026}
     forecast_2026 = g.simulate_2026_scoreline(
