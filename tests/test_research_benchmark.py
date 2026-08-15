@@ -6,12 +6,12 @@ import pandas as pd
 from worldcup2026.evaluation import (
     clustered_bootstrap_interval,
     clustered_sign_flip_pvalue,
+    top1_decision_probabilities,
 )
 from worldcup2026.match_stats import rolling_match_stats
 from worldcup2026.research_benchmark import (
     frozen_match_frame,
     match_stats_goal_data,
-    top1_decision_probabilities,
 )
 from worldcup2026.goals_simulation import sequential_goal_data
 
@@ -61,6 +61,14 @@ def test_sequential_goal_data_preserves_competition(monkeypatch) -> None:
                 "neutral": True,
             }
         ]
+    )
+    monkeypatch.setattr(
+        "worldcup2026.goals_simulation.p.regulation_time_results",
+        lambda frame: frame.assign(
+            regulation_complete=True,
+            home_score_90=frame.home_score,
+            away_score_90=frame.away_score,
+        ),
     )
     monkeypatch.setattr(
         "worldcup2026.goals_simulation.attach_fifa_rankings",

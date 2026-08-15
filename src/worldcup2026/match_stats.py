@@ -236,8 +236,12 @@ def rolling_match_stats(
                         array = np.asarray(records, dtype=float)
                         weights = np.exp(np.arange(len(records)) / (window / 2.0))
                         weights /= weights.sum()
-                        values[f"stat_{metric}_{side}_for"][index] = np.average(array[:, 0], weights=weights)
-                        values[f"stat_{metric}_{side}_against"][index] = np.average(array[:, 1], weights=weights)
+                        values[f"stat_{metric}_{side}_for"][index] = np.average(
+                            array[:, 0], weights=weights
+                        )
+                        values[f"stat_{metric}_{side}_against"][index] = np.average(
+                            array[:, 1], weights=weights
+                        )
                         values[f"stat_{metric}_{side}_count"][index] = len(records)
 
         current = observations_by_date.get(date)

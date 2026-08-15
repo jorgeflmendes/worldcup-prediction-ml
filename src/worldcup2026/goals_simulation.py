@@ -396,8 +396,10 @@ def fit_goal_model(
         away = PoissonRegressor(alpha=0.4, max_iter=500)
     elif kind == "hist_gradient":
         for col in home_x.columns:
-            if home_x[col].isna().all(): home_x[col] = 0.0
-            if away_x[col].isna().all(): away_x[col] = 0.0
+            if home_x[col].isna().all():
+                home_x[col] = 0.0
+            if away_x[col].isna().all():
+                away_x[col] = 0.0
         home = HistGradientBoostingRegressor(
             loss="poisson",
             learning_rate=0.045,
@@ -422,8 +424,10 @@ def fit_goal_model(
         )
     elif kind.startswith("blend_"):
         for col in home_x.columns:
-            if home_x[col].isna().all(): home_x[col] = 0.0
-            if away_x[col].isna().all(): away_x[col] = 0.0
+            if home_x[col].isna().all():
+                home_x[col] = 0.0
+            if away_x[col].isna().all():
+                away_x[col] = 0.0
         try:
             hist_weight = float(kind.removeprefix("blend_"))
         except ValueError as error:
@@ -555,21 +559,21 @@ def score_cache(
         matrix = np.outer(
             poisson_probabilities(float(h_mean)), poisson_probabilities(float(a_mean))
         )
-        
+
         if injected_1x2 is not None and pair in injected_1x2:
             p_home, p_draw, p_away = injected_1x2[pair]
-            
+
             w_sum = matrix[home_win].sum()
             d_sum = matrix[draw].sum()
             l_sum = matrix[~home_win & ~draw].sum()
-            
+
             if w_sum > 0:
-                matrix[home_win] *= (p_home / w_sum)
+                matrix[home_win] *= p_home / w_sum
             if d_sum > 0:
-                matrix[draw] *= (p_draw / d_sum)
+                matrix[draw] *= p_draw / d_sum
             if l_sum > 0:
-                matrix[~home_win & ~draw] *= (p_away / l_sum)
-                
+                matrix[~home_win & ~draw] *= p_away / l_sum
+
             matrix /= matrix.sum()
 
         output[pair] = {

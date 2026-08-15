@@ -561,7 +561,7 @@ def elo_before(results: pd.DataFrame, cutoff: pd.Timestamp) -> dict[str, float]:
             observed_home = 0.0
         else:
             observed_home = 0.5
-        
+
         diff = abs(row.home_score - row.away_score)
         if diff <= 1:
             g = 1.0
