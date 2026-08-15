@@ -7,7 +7,7 @@ import zipfile
 from collections import defaultdict
 from collections.abc import Iterable
 from difflib import SequenceMatcher
-from functools import cache, lru_cache
+from functools import cache
 from pathlib import Path
 
 import numpy as np
@@ -15,7 +15,7 @@ import pandas as pd
 import requests
 from lxml import etree, html
 
-from .config import ARTIFACT_DIR, EXTERNAL_DIR, PROJECT_ROOT, RAW_DIR
+from .config import EXTERNAL_DIR, PROJECT_ROOT, RAW_DIR
 
 ROOT = PROJECT_ROOT
 
