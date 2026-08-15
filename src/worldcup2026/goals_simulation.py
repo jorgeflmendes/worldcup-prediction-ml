@@ -634,7 +634,7 @@ def historical_groups(year: int) -> dict[str, list[str]]:
     current = None
     for heading in tree.xpath("//h2|//h3"):
         text = re.sub(r"\[edit\]$", "", heading.text_content().strip())
-        group_match = re.fullmatch(r"Group\s+([A-H])", text, flags=re.I)
+        group_match = re.fullmatch(r"Group\s+([A-H])", text, flags=re.IGNORECASE)
         if heading.tag == "h2" and group_match:
             current = group_match.group(1).upper()
         elif heading.tag == "h2":

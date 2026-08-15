@@ -2,20 +2,20 @@ from __future__ import annotations
 
 import io
 import re
+import unicodedata
 import zipfile
 from collections import defaultdict
-from pathlib import Path
-from typing import Iterable
+from collections.abc import Iterable
 from difflib import SequenceMatcher
-from functools import lru_cache
-from lxml import etree, html
-import unicodedata
+from functools import cache, lru_cache
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import requests
-from .config import ARTIFACT_DIR as ARTIFACT_DIR
-from .config import EXTERNAL_DIR, PROJECT_ROOT, RAW_DIR
+from lxml import etree, html
+
+from .config import ARTIFACT_DIR, EXTERNAL_DIR, PROJECT_ROOT, RAW_DIR
 
 ROOT = PROJECT_ROOT
 
@@ -223,7 +223,7 @@ def load_2026_teams(refresh: bool) -> list[str]:
     return teams
 
 
-@lru_cache(maxsize=None)
+@cache
 def kaggle_2026_squad_snapshot(cutoff_text: str, refresh: bool) -> pd.DataFrame:
     """Current edition roster metadata, kept separate from historical results and fixtures."""
     archive = cached_download(
@@ -275,7 +275,7 @@ def normalized_text(value: object) -> str:
     return re.sub(r"[^a-z0-9]", "", text)
 
 
-@lru_cache(maxsize=None)
+@cache
 def wiki_squad_snapshot(year: int, refresh: bool) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Parse roster tables and coach names from an edition squad page."""
     revision = WIKIPEDIA_SQUAD_REVISIONS.get(year)
@@ -309,7 +309,7 @@ def wiki_squad_snapshot(year: int, refresh: bool) -> tuple[pd.DataFrame, pd.Data
                 continue
             text = " ".join(node.text_content().split())
             found_coach = re.search(
-                r"(?:Head )?(?:coach|manager)\s*:\s*(.+)", text, flags=re.I
+                r"(?:Head )?(?:coach|manager)\s*:\s*(.+)", text, flags=re.IGNORECASE
             )
             if found_coach:
                 coach = re.sub(r"\[.*?\]", "", found_coach.group(1)).strip()

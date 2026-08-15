@@ -34,11 +34,12 @@ from .evaluation import (
     fit_platt_calibrator,
     metric_summary,
     rps_vector,
-    safe_probability as _safe_probability,
     tune_temperature,
 )
+from .evaluation import (
+    safe_probability as _safe_probability,
+)
 from .fixtures import load_2026_fixtures
-
 
 warnings.filterwarnings(
     "ignore", category=FutureWarning, module="sklearn.linear_model._logistic"
@@ -372,7 +373,7 @@ def competition_specs(
     specs = []
     for (tournament, year), group in games.groupby(["tournament", games.date.dt.year]):
         if len(group) >= minimum_matches:
-            specs.append((str(tournament), int(year), int(len(group))))
+            specs.append((str(tournament), int(year), len(group)))
     return sorted(specs, key=lambda item: (item[1], item[0]))
 
 
@@ -3005,7 +3006,7 @@ def run_benchmark(
         },
         "walk_forward_diagnostic": {
             "world_cups": list(WALK_FORWARD_YEARS),
-            "matches": int(len(pooled_walk_truth)),
+            "matches": len(pooled_walk_truth),
             "metrics": {
                 row["model"]: {
                     key: value

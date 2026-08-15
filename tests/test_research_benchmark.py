@@ -8,12 +8,12 @@ from worldcup2026.evaluation import (
     clustered_sign_flip_pvalue,
     top1_decision_probabilities,
 )
+from worldcup2026.goals_simulation import sequential_goal_data
 from worldcup2026.match_stats import rolling_match_stats
 from worldcup2026.research_benchmark import (
     frozen_match_frame,
     match_stats_goal_data,
 )
-from worldcup2026.goals_simulation import sequential_goal_data
 
 
 def test_frozen_match_frame_ignores_unplayed_fixtures() -> None:

@@ -10,7 +10,6 @@ import pandas as pd
 
 from . import pipeline as p
 
-
 HISTORICAL_STATS_URL = (
     "https://huggingface.co/datasets/adibmed/football-dataset/resolve/"
     "4612e73080f67e00290d9334081cd447f9dff7c6/output/01_matches_all.csv"

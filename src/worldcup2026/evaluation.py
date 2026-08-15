@@ -3,13 +3,12 @@
 from __future__ import annotations
 
 import math
-from itertools import product
+from itertools import pairwise, product
 
 import numpy as np
 from scipy.optimize import minimize
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, log_loss, roc_auc_score
-
 
 TOP1_POISSON_WEIGHT = 0.675
 
@@ -41,7 +40,7 @@ def expected_calibration_error(
     correct = (probability.argmax(axis=1) == truth).astype(float)
     value = 0.0
     edges = np.linspace(0.0, 1.0, bins + 1)
-    for low, high in zip(edges[:-1], edges[1:]):
+    for low, high in pairwise(edges):
         mask = (confidence >= low) & (
             confidence < high if high < 1 else confidence <= high
         )

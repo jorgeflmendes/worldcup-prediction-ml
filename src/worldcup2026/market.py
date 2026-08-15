@@ -9,7 +9,6 @@ import pandas as pd
 
 from . import pipeline as p
 
-
 FOOTBALL_DATA_URL = "https://www.football-data.co.uk/WorldCup2026.xlsx"
 MARKET_WEIGHT = 0.06
 GROUP_END = {
